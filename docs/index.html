@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title></title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" crossorigin="anonymous">
+<script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/pmtiles@2.4.0/dist/index.js"></script>
+<script src="https://unpkg.com/protomaps-themes-base@1.1.0/dist/index.js"></script>  
+<style>
+body { margin: 0; }
+#map { height:100%; width:100%; }
+#overlay { position: absolute; top: 1rem;
+  left: 1rem; font: 600 16px sans-serif;
+  background-color: white; border-radius: 4px;
+  padding: 0.5rem; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script type="text/javascript">
+let protocol = new pmtiles.Protocol()
+maplibregl.addProtocol("pmtiles", protocol.tile)
+
+let URL = "https://amx-project.github.io/a/tiles.pmtiles"
+
+fetch(URL, {method: "HEAD"}).then(resp => {
+  const map = new maplibregl.Map({
+    center: [137.889404, 35.218697],
+    zoom: 13,
+    maxZoom: 18,
+    container: 'map',
+    hash: true,
+    style: 'style.json'
+  })
+})
+</script>
+</body>
+</html>
