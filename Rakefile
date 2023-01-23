@@ -1,3 +1,10 @@
+desc 'create GeoJSON Text Sequence from src/*-*-*.zip'
+task :stream do
+  sh <<-EOS
+ruby stream.rb
+  EOS
+end
+
 desc 'create mbtiles'
 task :mbtiles do
   sh <<-EOS
