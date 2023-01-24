@@ -2,6 +2,7 @@
 *.geojson
 *.geojsons
 *.mbtiles
+*.pmtiles
 *.fgb
 *.xml
 *.csv

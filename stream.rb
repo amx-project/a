@@ -1,17 +1,14 @@
 require 'tmpdir'
 
-def to_geojsons(path)
-  Dir.mktmpdir do |dir|
-    bn = File.basename(path, '.zip')
-    system <<-EOS
-unzip -d #{dir} #{path}; \
-mojxml2geojson -e #{dir}/#{bn}.xml; \
-ogr2ogr -f FlatGeobuf #{bn}.fgb #{dir}/#{bn}.geojson
-    EOS
-  end
+Dir.mktmpdir do |dir|
+  File.open("#{dir}/list", 'w') {|w|
+    Dir.glob('src/*-*-*.zip').each {|path|
+      w.print "#{path}\n"
+    }
+  }
+  system <<-EOS
+DIR=#{dir} parallel --eta --line-buffer -a #{dir}/list \
+ruby to_geojson.rb {}
+  EOS
 end
-
-Dir.glob('src/*-*-*.zip') {|path|
-  to_geojsons(path)
-}
 
