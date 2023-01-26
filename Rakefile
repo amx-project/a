@@ -8,25 +8,27 @@ end
 desc 'create GeoJSON Text Sequence from src/*-*-*.zip'
 task :geojsons do
   sh <<-EOS
-ruby stream.rb > a.geojsons
-  EOS
-end
-
-desc 'create FlatGeobuf from GeoJSON Text Sequence'
-task fgb: [:geojsons] do
-  sh <<-EOS
-rm -f a.fgb; \
-ogr2ogr -overwrite -f FlatGeobuf \
-a.fgb a.geojsons
+ruby stream.rb > a.json
   EOS
 end
 
 desc 'create mbtiles'
-task mbtiles: [:fgb] do
+task mbtiles: [:geojsons] do
   sh <<-EOS
-tippecanoe --quiet \
+tippecanoe \
+-rg \
 --drop-densest-as-needed \
--f -o a.mbtiles a.geojsons
+--no-line-simplification \
+-x 筆ID \
+-x version \
+-x 代表点緯度 \
+-x 代表点経度 \
+--minimum-zoom=2 \
+--base-zoom=14 \
+--maximum-zoom=16 \
+--read-parallel \
+--detect-shared-boarders \
+-f -o a.mbtiles a.json
   EOS
 end
 

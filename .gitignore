@@ -6,3 +6,6 @@
 *.fgb
 *.xml
 *.csv
+*.json
+*.tmp
+src/kuwanauchi*

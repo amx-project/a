@@ -12,10 +12,10 @@ while gets
     :type => 'Feature',
     :tippecanoe => {
       :layer => 'daihyo',
-      :minzoom => 8,
+      :minzoom => 2,
       :maxzoom => 13
     },
-    :properties => f['properties'],
+    :properties => {},
     :geometry => {
       :type => 'Point',
       :coordinates => [
