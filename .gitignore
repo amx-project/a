@@ -1,7 +1,7 @@
 *.zip
 *.geojson
 *.geojsons
-*.mbtiles
+*.mbtiles*
 *.pmtiles
 *.fgb
 *.xml

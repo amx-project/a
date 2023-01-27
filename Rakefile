@@ -1,34 +1,42 @@
-desc 'stream GeoJSON Text Sequence from src/*-*-*.zip'
-task :stream do
+desc 'stream fude GeoJSON Text Sequence from src/*-*-*.zip'
+task :fude do
   sh <<-EOS
-ruby stream.rb
+TYPE=fude ruby stream.rb
   EOS
 end
 
-desc 'create GeoJSON Text Sequence from src/*-*-*.zip'
-task :geojsons do
+desc 'stream daihyo GeoJSON Text Sequence from src/*-*-*.zip'
+task :daihyo do
   sh <<-EOS
-ruby stream.rb > a.json
+TYPE=daihyo ruby stream.rb
   EOS
 end
 
 desc 'create mbtiles'
-task mbtiles: [:geojsons] do
+task :mbtiles do
   sh <<-EOS
+rake daihyo | \
 tippecanoe \
--rg \
+--quiet \
 --drop-densest-as-needed \
---no-line-simplification \
 -x 筆ID \
 -x version \
 -x 代表点緯度 \
 -x 代表点経度 \
 --minimum-zoom=2 \
---base-zoom=14 \
+--maximum-zoom=13 \
+-f -o daihyo.mbtiles; \
+rake fude | \
+tippecanoe \
+--quiet \
+-x 筆ID \
+-x version \
+-x 代表点緯度 \
+-x 代表点経度 \
+--minimum-zoom=14 \
 --maximum-zoom=16 \
---read-parallel \
---detect-shared-boarders \
--f -o a.mbtiles a.json
+-f -o fude.mbtiles; \
+tile-join -f -o a.mbtiles fude.mbtiles daihyo.mbtiles
   EOS
 end
 

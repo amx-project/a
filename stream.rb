@@ -4,7 +4,7 @@ File.open("list.tmp", 'w') {|w|
   }
 }
 system <<-EOS
-parallel -P 4 --eta --line-buffer -a list.tmp \
+parallel -P 7 --eta --line-buffer -a list.tmp \
 ruby to_geojson.rb {}
 EOS
 
