@@ -1,21 +1,11 @@
-desc 'stream fude GeoJSON Text Sequence from src/*-*-*.zip'
-task :fude do
-  sh <<-EOS
-TYPE=fude ruby stream.rb
-  EOS
-end
-
-desc 'stream daihyo GeoJSON Text Sequence from src/*-*-*.zip'
-task :daihyo do
-  sh <<-EOS
-TYPE=daihyo ruby stream.rb
-  EOS
-end
-
 desc 'create mbtiles'
 task :mbtiles do
-  sh <<-EOS
-rake daihyo | \
+  1.upto(47) do |i|
+    pref = sprintf('%02d', i) 
+    next if File.exist?("#{pref}.mbtiles")
+    $stderr.print "#{Time.now}: #{pref}\n"
+    sh <<-EOS
+TYPE=daihyo PREF=#{pref} ruby stream.rb | \
 tippecanoe \
 --quiet \
 --drop-densest-as-needed \
@@ -25,8 +15,8 @@ tippecanoe \
 -x 代表点経度 \
 --minimum-zoom=2 \
 --maximum-zoom=13 \
--f -o daihyo.mbtiles; \
-rake fude | \
+-f -o #{pref}-daihyo.mbtiles; \
+TYPE=fude PREF=#{pref} ruby stream.rb | \
 tippecanoe \
 --quiet \
 -x 筆ID \
@@ -35,14 +25,20 @@ tippecanoe \
 -x 代表点経度 \
 --minimum-zoom=14 \
 --maximum-zoom=16 \
--f -o fude.mbtiles; \
-tile-join -f -o a.mbtiles fude.mbtiles daihyo.mbtiles
-  EOS
+-f -o #{pref}-fude.mbtiles; \
+tile-join -f -o #{pref}.mbtiles #{pref}-fude.mbtiles #{pref}-daihyo.mbtiles; \
+rm #{pref}-fude.mbtiles #{pref}-daihyo.mbtiles
+    EOS
+  end
 end
 
 desc 'create pmtiles'
-task pmtiles: [:mbtiles] do
+task :pmtiles do
+  files = Dir.glob('??.mbtiles').sort.filter {|path|
+    !File.exist?("#{path}-journal")
+  }
   sh <<-EOS
+tile-join -f --no-tile-size-limit -o a.mbtiles #{files.join(' ')}; \
 pmtiles convert a.mbtiles a.pmtiles
   EOS
 end
