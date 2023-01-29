@@ -3,17 +3,12 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title></title>
-<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" crossorigin="anonymous">
-<script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/pmtiles@2.4.0/dist/index.js"></script>
-<script src="https://unpkg.com/protomaps-themes-base@1.1.0/dist/index.js"></script>  
+<link rel="stylesheet" href="maplibre-gl.css" crossorigin="anonymous">
+<script src="maplibre-gl.js" crossorigin="anonymous"></script>
+<script src="index.js"></script>
 <style>
 body { margin: 0; }
 #map { height:100%; width:100%; }
-#overlay { position: absolute; top: 1rem;
-  left: 1rem; font: 600 16px sans-serif;
-  background-color: white; border-radius: 4px;
-  padding: 0.5rem; }
 </style>
 </head>
 <body>
@@ -22,7 +17,7 @@ body { margin: 0; }
 let protocol = new pmtiles.Protocol()
 maplibregl.addProtocol("pmtiles", protocol.tile)
 
-let URL = "https://amx-project.github.io/a/tiles.pmtiles"
+let URL = "https://x.optgeo.org/a.pmtiles"
 
 fetch(URL, {method: "HEAD"}).then(resp => {
   const map = new maplibregl.Map({

@@ -1,0 +1,311 @@
+# --- metadata --- #
+version: 8
+name: optbv-intl
+
+# --- colors --- #
+$background-color: rgba(255, 255, 255, 1)
+$water-color: rgba(190, 210, 244, 1)
+$transparent-color: rgba(0, 0, 0, 0)
+$wetland-color: rgba(200, 250, 230, 1)
+$snow-color: rgba(217, 217, 217, 1)
+$sand-color: rgba(235, 242, 235, 1)
+$text-halo-color: rgba(255, 255, 255, 1)
+
+# -- sizes -- #
+$text-halo-width: 1
+$intl-text-halo-width: 1 
+
+# --- complex values --- #
+$anchor: 
+  - match
+  - - get
+    - dspPos
+  - LT
+  - top-left
+  - CT
+  - top
+  - RT
+  - top-right
+  - LC
+  - left
+  - CC
+  - center
+  - RC
+  - right
+  - LB
+  - bottom-left
+  - CB
+  - bottom
+  - RB
+  - bottom-right
+  - left
+
+# --- glyphs --- #
+$glyphs: >-
+  https://gsi-cyberjapan.github.io/optimal_bvmap/glyphs/{fontstack}/{range}.pbf
+$regular-font: NotoSansJP-Regular
+$regular-intl-font: NotoSansJP-Regular
+$bold-font: NotoSerifJP-SemiBold
+glyphs: $glyphs
+
+# --- sprite --- #
+$sprite: >-
+  https://gsi-cyberjapan.github.io/optimal_bvmap/sprite/std
+sprite: $sprite
+
+# --- sources --- #
+sources:
+  v:
+    type: vector
+    minzoom: 4
+    maxzoom: 16
+    tiles:
+      - >-
+        https://maps.gsi.go.jp/xyz/experimental_bvmap-v1/{z}/{x}/{y}.pbf
+    attribution: optbv by GSI
+  ise:
+    type: vector
+    minzoom: 5
+    maxzoom: 16
+    tiles:
+      - >-
+        https://x.optgeo.org/ise/zxy/{z}/{x}/{y}.pbf
+    attribution: ise with GSI
+  a:
+    type: vector
+    minzoom: 2
+    maxzoom: 16
+    url: >-
+      pmtiles://https://x.optgeo.org/a.pmtiles
+    attribution: 法務省地図XML
+
+# --- layers --- #
+layers:
+# background and areas
+  - !!inc/file layers/background.yml
+  - !!inc/file layers/admarea.yml
+  - !!inc/file layers/wa.yml
+  - !!inc/file layers/tpgpharea.yml
+  - id: fude
+    type: fill
+    source: a
+    source-layer: fude
+    paint:
+      fill-color: 'rgba(254, 217, 192, 1)'
+      fill-outline-color: 'rgba(255, 0, 0, 1)'
+      fill-opacity: 0.5
+  - id: daihyo
+    type: heatmap
+    source: a
+    source-layer: daihyo
+    paint:
+      heatmap-color:
+        - interpolate
+        - - linear
+        - - heatmap-density
+        - 0
+        - 'rgba(255, 255, 255, 0)'
+        - 1
+        - 'rgba(254, 217, 192, 0.5)'
+      heatmap-radius:
+        - interpolate
+        - - exponential
+          - 2
+        - - zoom
+        - 0
+        - 1
+        - 14
+        - 32
+# lines
+  - !!inc/file layers/cstline.yml
+  - !!inc/file layers/rvrcl-5322.yml
+  - !!inc/file layers/rvrcl-5302.yml
+  - !!inc/file layers/rvrcl.yml
+  - !!inc/file layers/cstline-5103.yml
+  - !!inc/file layers/wl.yml
+  - !!inc/file layers/wl-bank.yml
+  - !!inc/file layers/wrltline-pg.yml
+  - !!inc/file layers/wrltline-ls.yml
+  - !!inc/file layers/wrltline-pt.yml
+  - !!inc/file layers/admbdry-1221-25000.yml
+  - !!inc/file layers/admbdry-1212-25000.yml
+  - !!inc/file layers/admbdry-1211.yml
+  - !!inc/file layers/admbdry-1212.yml
+  - !!inc/file layers/admbdry-1221.yml
+  - !!inc/file layers/cntr.yml
+  - !!inc/file layers/cntr-7352.yml
+  - !!inc/file layers/isbt.yml
+  - !!inc/file layers/isbt-7372.yml
+  - !!inc/file layers/tpgphline.yml
+  - !!inc/file layers/wstra.yml
+  - !!inc/file layers/wstrl.yml
+  - !!inc/file layers/rdcl-11-national.yml
+  - !!inc/file layers/railcl-11.yml
+  - !!inc/file layers/rdcl-11-express.yml
+  - !!inc/file layers/rdcl-edge-0.yml
+  - !!inc/file layers/rdcl-paint-0.yml
+  - !!inc/file layers/railcl-station-0.yml
+  - !!inc/file layers/railcl-0.yml
+  - !!inc/file layers/railcl-zebra-0.yml
+  - !!inc/file layers/rdcl-bridge-0.yml
+  - !!inc/file layers/rdcl-paint-bridge-0.yml
+  - !!inc/file layers/blda-0.yml
+  - !!inc/file layers/blda-0-ls.yml
+  - !!inc/file layers/railcl-bridge-black-0.yml
+  - !!inc/file layers/railcl-bridge-white-0.yml
+  - !!inc/file layers/railcl-bridge-station-0.yml
+  - !!inc/file layers/railcl-bridge-0.yml
+  - !!inc/file layers/railcl-zebra-bridge-0.yml
+  - !!inc/file layers/rdcl-edge-1.yml
+  - !!inc/file layers/rdcl-paint-1.yml
+  - !!inc/file layers/railcl-station-1.yml
+  - !!inc/file layers/railcl-1.yml
+  - !!inc/file layers/railcl-zebra-1.yml
+  - !!inc/file layers/rdcl-bridge-1.yml
+  - !!inc/file layers/rdcl-paint-bridge-1.yml
+  - !!inc/file layers/railcl-bridge-black-1.yml
+  - !!inc/file layers/railcl-bridge-white-1.yml
+  - !!inc/file layers/railcl-bridge-station-1.yml
+  - !!inc/file layers/railcl-bridge-1.yml
+  - !!inc/file layers/railcl-zebra-bridge-1.yml
+  - !!inc/file layers/blda-1.yml
+  - !!inc/file layers/blda-1-ls.yml
+  - !!inc/file layers/rdcl-edge-2.yml
+  - !!inc/file layers/rdcl-paint-2.yml
+  - !!inc/file layers/railcl-station-2.yml
+  - !!inc/file layers/railcl-2.yml
+  - !!inc/file layers/railcl-zebra-2.yml
+  - !!inc/file layers/rdcl-bridge-2.yml
+  - !!inc/file layers/rdcl-paint-bridge-2.yml
+  - !!inc/file layers/railcl-bridge-black-2.yml
+  - !!inc/file layers/railcl-bridge-white-2.yml
+  - !!inc/file layers/railcl-bridge-station-2.yml
+  - !!inc/file layers/railcl-bridge-2.yml
+  - !!inc/file layers/railcl-zebra-bridge-2.yml
+  - !!inc/file layers/blda-2.yml
+  - !!inc/file layers/blda-2-ls.yml
+  - !!inc/file layers/rdcl-edge-3.yml
+  - !!inc/file layers/rdcl-paint-3.yml
+  - !!inc/file layers/railcl-station-3.yml
+  - !!inc/file layers/railcl-3.yml
+  - !!inc/file layers/railcl-zebra-3.yml
+  - !!inc/file layers/rdcl-bridge-3.yml
+  - !!inc/file layers/rdcl-paint-bridge-3.yml
+  - !!inc/file layers/railcl-bridge-black-3.yml
+  - !!inc/file layers/railcl-bridge-white-3.yml
+  - !!inc/file layers/railcl-bridge-station-3.yml
+  - !!inc/file layers/railcl-bridge-3.yml
+  - !!inc/file layers/railcl-zebra-bridge-3.yml
+  - !!inc/file layers/blda-3.yml
+  - !!inc/file layers/blda-3-ls.yml
+  - !!inc/file layers/rdcl-edge-4.yml
+  - !!inc/file layers/rdcl-paint-4.yml
+  - !!inc/file layers/railcl-station-4.yml
+  - !!inc/file layers/railcl-4.yml
+  - !!inc/file layers/railcl-zebra-4.yml
+  - !!inc/file layers/rdcl-bridge-4.yml
+  - !!inc/file layers/rdcl-paint-bridge-4.yml
+  - !!inc/file layers/railcl-bridge-black-4.yml
+  - !!inc/file layers/railcl-bridge-white-4.yml
+  - !!inc/file layers/railcl-bridge-station-4.yml
+  - !!inc/file layers/railcl-bridge-4.yml
+  - !!inc/file layers/railcl-zebra-bridge-4.yml
+  - !!inc/file layers/blda-4.yml
+  - !!inc/file layers/blda-4-ls.yml
+  - !!inc/file layers/rdcl-dash.yml
+  - !!inc/file layers/rdcl-steps.yml
+  - !!inc/file layers/railcl-underground-edge.yml
+  - !!inc/file layers/railcl-underground.yml
+  - !!inc/file layers/railtrcl-tunnel.yml
+  - !!inc/file layers/rdedg.yml
+  - !!inc/file layers/rdcompt-2401.yml
+  - !!inc/file layers/rdcompt-2411.yml
+  - !!inc/file layers/railtrcl.yml
+  - !!inc/file layers/spcfarea.yml
+  - !!inc/file layers/strctarea.yml
+  - !!inc/file layers/strctarea-ls.yml
+  - !!inc/file layers/strctline.yml
+  - !!inc/file layers/pwrtrnsml.yml
+  - !!inc/file layers/pwrtrnsml-dash.yml
+# annotations and symbols
+  - !!inc/file layers/anno-symbol-allow-overlap.yml
+  - !!inc/file layers/anno-route-number.yml
+  - !!inc/file layers/anno-symbol.yml
+  - !!inc/file layers/anno-vertical.yml
+  - !!inc/file layers/anno.yml
+  - !!inc/file layers/anno-ls.yml
+  - !!inc/file layers/anno-symbol-priority.yml
+  - !!inc/file layers/anno-vertical-priority.yml
+  - !!inc/file layers/anno-priority.yml
+# internationalized annotations
+  - !!inc/file layers/m50100-150.yml
+  - !!inc/file layers/m50100-140.yml
+  - !!inc/file layers/m50100-344.yml
+  - !!inc/file layers/m50100-351.yml
+  - !!inc/file layers/m50100-352.yml
+  - !!inc/file layers/m50100-321.yml
+  - !!inc/file layers/m50100-322.yml
+  - !!inc/file layers/m50100-346.yml
+  - !!inc/file layers/m50100-343.yml
+  - !!inc/file layers/m50100-333.yml
+  - !!inc/file layers/m50100-345.yml
+  - !!inc/file layers/m51301.yml
+  - !!inc/file layers/m56376.yml
+  - !!inc/file layers/m100-140.yml
+  - !!inc/file layers/m100-212.yml
+  - !!inc/file layers/m100-314.yml
+  - !!inc/file layers/m100-315.yml
+  - !!inc/file layers/m100-316.yml
+  - !!inc/file layers/m100-333.yml
+  - !!inc/file layers/m100-334.yml
+  - !!inc/file layers/m100-346.yml
+  - !!inc/file layers/m1401.yml
+  - !!inc/file layers/m1402.yml
+  - !!inc/file layers/m1403.yml
+  - !!inc/file layers/m6376.yml
+  - !!inc/file layers/m100-344.yml
+  - !!inc/file layers/m2903.yml
+  - !!inc/file layers/m2904.yml
+  - !!inc/file layers/m100-110.yml
+  - !!inc/file layers/m100-120.yml
+  - !!inc/file layers/m100-210.yml
+  - !!inc/file layers/m100-220.yml
+  - !!inc/file layers/m100-311.yml
+  - !!inc/file layers/m100-312.yml
+  - !!inc/file layers/m100-313.yml
+  - !!inc/file layers/m100-321.yml
+  - !!inc/file layers/m100-322.yml
+  - !!inc/file layers/m100-323.yml
+  - !!inc/file layers/m100-331.yml
+  - !!inc/file layers/m100-332.yml
+  - !!inc/file layers/m100-343.yml
+  - !!inc/file layers/m100-345.yml
+  - !!inc/file layers/m100-347.yml
+  - !!inc/file layers/m100-351.yml
+  - !!inc/file layers/m100-352.yml
+  - !!inc/file layers/m100-353.yml
+  - !!inc/file layers/m100-411.yml
+  - !!inc/file layers/m100-412.yml
+  - !!inc/file layers/m100-421.yml
+  - !!inc/file layers/m100-431.yml
+  - !!inc/file layers/m100-441.yml
+  - !!inc/file layers/m100-531.yml
+  - !!inc/file layers/m100-612.yml
+  - !!inc/file layers/m100-631.yml
+  - !!inc/file layers/m100-651.yml
+  - !!inc/file layers/m100-681.yml
+  - !!inc/file layers/m2901.yml
+  - !!inc/file layers/m2910.yml
+  - !!inc/file layers/m2930.yml
+  - !!inc/file layers/m3207.yml
+  - !!inc/file layers/m3208.yml
+  - !!inc/file layers/m3205.yml
+  - !!inc/file layers/m3206.yml
+  - !!inc/file layers/m3211.yml
+  - !!inc/file layers/m3216.yml
+  - !!inc/file layers/m3218.yml
+  - !!inc/file layers/m3231.yml
+  - !!inc/file layers/m3232.yml
+  - !!inc/file layers/m3243.yml
+  - !!inc/file layers/m6331.yml
+

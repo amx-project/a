@@ -46,11 +46,12 @@ end
 desc 'create style.json'
 task :style do
   sh <<-EOS
+charites build style.yml docs/style.json
   EOS
 end
 
 desc 'host the site locally'
-task host: [:pmtiles, :style] do
+task :host do
   sh <<-EOS
 budo -d docs
   EOS
