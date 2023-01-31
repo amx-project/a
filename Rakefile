@@ -32,13 +32,31 @@ rm #{pref}-fude.mbtiles #{pref}-daihyo.mbtiles
   end
 end
 
-desc 'create pmtiles'
-task :pmtiles do
-  files = Dir.glob('??.mbtiles').sort.filter {|path|
+def files
+  list = Dir.glob('??.mbtiles').sort.filter {|path|
     !File.exist?("#{path}-journal")
   }
+  list
+end
+
+desc 'create pmtiles'
+task :pmtiles do
   sh <<-EOS
-tile-join -f --no-tile-size-limit -o a.mbtiles #{files.join(' ')}; \
+tile-join -f --no-tile-size-limit \
+--minimum-zoom=14 --maximum-zoom=16 \
+-o a-fude.mbtiles #{files.join(' ')}; \
+(parallel -P 2 --eta --line-buffer \
+"tippecanoe-decode \
+-Z 13 -z 13 {} | tippecanoe-json-tool" \
+::: #{files.join(' ')}) | \
+tippecanoe \
+-r3 \
+--drop-densest-as-needed \
+--minimum-zoom=2 \
+--maximum-zoom=13 \
+--layer=daihyo \
+-f -o a-daihyo.mbtiles; \
+tile-join -f --no-tile-size-limit -o a.mbtiles a-fude.mbtiles a-daihyo.mbtiles; \
 pmtiles convert a.mbtiles a.pmtiles
   EOS
 end
@@ -54,6 +72,13 @@ desc 'host the site locally'
 task :host do
   sh <<-EOS
 budo -d docs
+  EOS
+end
+
+desc 'rebuid daihyo tiles'
+task :rebuild do
+  sh <<-EOS
+echo #{files}
   EOS
 end
 

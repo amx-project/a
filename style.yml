@@ -112,10 +112,10 @@ layers:
         - - exponential
           - 2
         - - zoom
-        - 0
-        - 1
+        - 2
+        - 4
         - 14
-        - 32
+        - 128
 # lines
   - !!inc/file layers/cstline.yml
   - !!inc/file layers/rvrcl-5322.yml
