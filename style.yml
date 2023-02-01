@@ -113,9 +113,9 @@ layers:
           - 2
         - - zoom
         - 2
-        - 4
+        - 8
         - 14
-        - 128
+        - 64
 # lines
   - !!inc/file layers/cstline.yml
   - !!inc/file layers/rvrcl-5322.yml
