@@ -18,9 +18,8 @@ body { margin: 0; }
 <pre id="info"></pre>
 <script type="text/javascript">
 
-// Use UNVT Portable if accessed from Firefox.
-if (navigator.userAgent.match("Firefox") ||
-  navigator.userAgent.match("Safari")) {
+// Use UNVT Portable if not accessed from Chrome.
+if (!navigator.userAgent.match("Chrome")) {
   document.location.href = "https://amx-project.github.io/a#" +
     document.location.href.split('#')[1]
 }
