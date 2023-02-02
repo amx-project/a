@@ -19,8 +19,10 @@ body { margin: 0; }
 <script type="text/javascript">
 
 // Use UNVT Portable if accessed from Firefox.
-if (navigator.userAgent.match("Firefox")) {
-  document.location.href = "https://amx-project.github.io/a"
+if (navigator.userAgent.match("Firefox") ||
+  navigator.userAgent.match("Safari")) {
+  document.location.href = "https://amx-project.github.io/a#" +
+    document.location.href.split('#')[1]
 }
 
 let protocol = new pmtiles.Protocol()
