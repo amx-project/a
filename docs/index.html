@@ -34,8 +34,12 @@ map.on('mousemove', e => {
   let j = '-'
   if (fs.length == 0) {
   } else {
-    let p = fs[0].properties
-    j = p['市区町村名'] + p['大字名'] + p['地番']
+    let a = []
+    for(let f of fs) {
+      let p = f.properties
+      a.push(p['市区町村名'] + p['大字名'] + p['地番'])
+    }
+    j = a.join('; ')
   }
   document.getElementById('info').innerHTML = j
 })

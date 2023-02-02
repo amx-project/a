@@ -35,16 +35,20 @@ const map = new maplibregl.Map({
   style: 'habs.json'
 })
 
-map.on('mousemove', e => {
-  let fs = map.queryRenderedFeatures(e.point, { layers: ['fude'] })
-  let j = '-'
-  if (fs.length == 0) {
-  } else {
-    let p = fs[0].properties
-    j = p['市区町村名'] + p['大字名'] + p['地番']
-  }
-  document.getElementById('info').innerHTML = j
-})
+map.on('mousemove', e => {                                                      
+  let fs = map.queryRenderedFeatures(e.point, { layers: ['fude'] })             
+  let j = '-'                                                                   
+  if (fs.length == 0) {                                                         
+  } else {                                                                      
+    let a = []                                                                  
+    for(let f of fs) {                                                          
+      let p = f.properties                                                      
+      a.push(p['市区町村名'] + p['大字名'] + p['地番'])                         
+    }                                                                           
+    j = a.join('; ')                                                            
+  }                                                                             
+  document.getElementById('info').innerHTML = j                                 
+}) 
 </script>
 </body>
 </html>
