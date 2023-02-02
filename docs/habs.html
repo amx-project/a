@@ -9,10 +9,13 @@
 <style>
 body { margin: 0; }
 #map { height:100%; width:100%; }
+#info { position: absolute; top: 0; right: 0; overflow: auto;
+  margin: 0px auto; border: none; background: rgba(255, 255, 255, 0.8); }
 </style>
 </head>
 <body>
 <div id="map"></div>
+<pre id="info"></pre>
 <script type="text/javascript">
 
 // Use UNVT Portable if accessed from Firefox.
@@ -30,6 +33,17 @@ const map = new maplibregl.Map({
   container: 'map',
   hash: true,
   style: 'habs.json'
+})
+
+map.on('mousemove', e => {
+  let fs = map.queryRenderedFeatures(e.point, { layers: ['fude'] })
+  let j = '-'
+  if (fs.length == 0) {
+  } else {
+    let p = fs[0].properties
+    j = p['市区町村名'] + p['大字名'] + p['地番']
+  }
+  document.getElementById('info').innerHTML = j
 })
 </script>
 </body>
