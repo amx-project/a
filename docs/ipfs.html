@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>amx-a powered by UNVT Portable</title>
+<link rel="stylesheet" href="maplibre-gl.css" crossorigin="anonymous">
+<script src="maplibre-gl.js" crossorigin="anonymous"></script>
+<script src="index.js"></script>
+<style>
+body { margin: 0; }
+#map { height:100%; width:100%; }
+#info { position: absolute; top: 0; right: 0; overflow: auto;
+  margin: 0px auto; border: none; background: rgba(255, 255, 255, 0.8); }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<pre id="info"></pre>
+<script type="text/javascript">
+let protocol = new pmtiles.Protocol()
+maplibregl.addProtocol("pmtiles", protocol.tile)
+
+const map = new maplibregl.Map({
+  center: [140.0896, 36.08303],
+  zoom: 14.02,
+  maxZoom: 20,
+  container: 'map',
+  hash: true,
+  style: 'ipfs.json'
+})
+
+map.on('mousemove', e => {
+  let fs = map.queryRenderedFeatures(e.point, { layers: ['fude'] })
+  let j = '-'
+  if (fs.length == 0) {
+  } else {
+    let a = []
+    for(let f of fs) {
+      let p = f.properties
+      a.push(p['市区町村名'] + p['大字名'] + p['地番'])
+    }
+    j = a.join('; ')
+  }
+  document.getElementById('info').innerHTML = j
+})
+</script>
+</body>
+</html>
