@@ -37,7 +37,10 @@ map.on('mousemove', e => {
     let a = []
     for(let f of fs) {
       let p = f.properties
-      a.push(p['市区町村名'] + p['大字名'] + p['地番'])
+      let pr = (k) => {
+        return !p[k] ? '' : p[k]
+      } 
+      a.push(pr('市区町村名') + pr('大字名') + pr('丁目名') + pr('小字名') + pr('地番'))
     }
     j = a.join('; ')
   }
