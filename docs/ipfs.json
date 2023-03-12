@@ -26,7 +26,7 @@
       "type": "vector",
       "minzoom": 2,
       "maxzoom": 16,
-      "url": "pmtiles://https://x.optgeo.org/ipfs/QmTZHWMAnRC5zNiNvdVuTDacThKkj4jKbwsZtKQkAC4R69",
+      "url": "pmtiles://https://smb.optgeo.org/ipfs/QmTZHWMAnRC5zNiNvdVuTDacThKkj4jKbwsZtKQkAC4R69",
       "attribution": "法務省地図XML"
     }
   },
