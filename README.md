@@ -4,6 +4,9 @@ Implementation of https://github.com/amx-project/0/issues/4
 ## Demo
 https://amx-project.github.io/a
 
+### PMTiles location on IPFS
+QmTZHWMAnRC5zNiNvdVuTDacThKkj4jKbwsZtKQkAC4R69
+
 ## Document
 https://github.com/amx-project/a-spec
 
