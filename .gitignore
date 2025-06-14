@@ -8,3 +8,4 @@
 *.csv
 *.tmp
 src/kuwanauchi*
+tmp/

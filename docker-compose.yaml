@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  tile-builder-mojxml:
+    image: amx-a_mojxml
+    environment:
+      - START_PREF=1
+      - END_PREF=1
+    container_name: mojmap-tile-mojxml
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #command: ["rake", "mbtiles"]
+    #command: ["rake", "pmtiles"]
+    #command: ["rake", "style"]
+    #command: ["rake", "style"]
+    #command: ["rake", "host"]
+    #command: ["rake", "rebuild"]
+    command: ["rake", "mbtiles", "pmtiles", "style"]
+    tty: true
+    volumes:
+      - ./src:/app/src # for Source files(mojxml, geojson)
+      - ./tmp:/app/tmp # for debug
+      - ./output:/app/output # for mbtiles, pmtiles, style
