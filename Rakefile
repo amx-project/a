@@ -5,8 +5,52 @@ def pref_range
   (start_pref..end_pref).map { |i| sprintf('%02d', i) }
 end
 
-desc 'create mbtiles'
+desc 'create mbtiles (mojxml-rs / Rust frontend)'
 task :mbtiles do
+  pref_range.each do |pref|
+    next if File.exist?("output/#{pref}.mbtiles")
+    zips = Dir.glob("src/**/#{pref}*-*-*.zip").sort
+    if zips.empty?
+      $stderr.print "#{Time.now}: #{pref} skip (no zip)\n"
+      next
+    end
+    $stderr.print "#{Time.now}: #{pref} (#{zips.size} zip)\n"
+
+    # mojxml-rs は zip 群を一括・並列変換し newline-delimited GeoJSON を出力する。
+    # 任意座標系・地区外・別図はデフォルトで除外されるため grep -v 任意座標 は不要。
+    raw = "output/#{pref}.raw.geojson"
+    sh "mojxml-rs #{raw} #{zips.join(' ')}"
+
+    # 1 度の変換結果（raw）から fude / daihyo を生成し、XML の二重パースを避ける。
+    sh <<-EOS
+cat #{raw} | PREF=#{pref} ruby daihyo.rb | \
+tippecanoe \
+--quiet \
+--drop-densest-as-needed \
+-x 筆ID \
+-x version \
+-x 代表点緯度 \
+-x 代表点経度 \
+--minimum-zoom=2 \
+--maximum-zoom=13 \
+-f -o output/#{pref}-daihyo.mbtiles; \
+cat #{raw} | PREF=#{pref} ruby fude.rb | \
+tippecanoe \
+--quiet \
+-x version \
+-x 代表点緯度 \
+-x 代表点経度 \
+--minimum-zoom=14 \
+--maximum-zoom=16 \
+-f -o output/#{pref}-fude.mbtiles; \
+tile-join -f -o output/#{pref}.mbtiles output/#{pref}-fude.mbtiles output/#{pref}-daihyo.mbtiles;
+    EOS
+  end
+end
+
+# 旧経路（mojxml2geojson + fude.rb / daihyo.rb）。フォールバック・比較検証用に残す。
+desc 'create mbtiles (legacy: mojxml2geojson)'
+task :mbtiles_legacy do
   pref_range.each do |pref|
     next if File.exist?("#{pref}.mbtiles")
     $stderr.print "#{Time.now}: #{pref}\n"

@@ -27,14 +27,14 @@ mojxml2geojson -e #{tmpdir}/#{bn}.xml
 
     system <<-EOS
 cat #{geojson_path} | tippecanoe-json-tool | \
-grep -v 任意座標 | BASENAME=#{bn} ruby fude.rb | tee #{out_path}
+grep -v 任意座標 | BASENAME=#{bn} ruby fude_legacy.rb | tee #{out_path}
     EOS
 
 # daihyoレイヤー（ポイント）の場合、そのままパイプラインに流す
   else
     system <<-EOS
 cat #{geojson_path} | tippecanoe-json-tool | \
-grep -v 任意座標 | BASENAME=#{bn} ruby #{type}.rb
+grep -v 任意座標 | BASENAME=#{bn} ruby #{type}_legacy.rb
     EOS
   end
 

@@ -38,6 +38,14 @@ RUN git clone https://github.com/felt/tippecanoe.git && \
 # for mojxml2geojson
 RUN pip install --break-system-packages git+https://github.com/digital-go-jp/mojxml2geojson.git
 
+# for mojxml-rs (Rust frontend; default conversion path)
+ARG MOJXML_RS_VERSION=v0.3.0
+RUN wget https://github.com/KotobaMedia/mojxml-rs/releases/download/${MOJXML_RS_VERSION}/mojxml-rs-x86_64-unknown-linux-gnu.zip \
+    && unzip mojxml-rs-x86_64-unknown-linux-gnu.zip \
+    && mv mojxml-rs /usr/local/bin/ \
+    && chmod +x /usr/local/bin/mojxml-rs \
+    && rm mojxml-rs-x86_64-unknown-linux-gnu.zip
+
 # for go-pmtiles
 RUN wget https://github.com/protomaps/go-pmtiles/releases/download/v1.26.1/go-pmtiles_1.26.1_Linux_x86_64.tar.gz \
     && tar xvf go-pmtiles_1.26.1_Linux_x86_64.tar.gz \

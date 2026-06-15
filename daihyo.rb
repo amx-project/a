@@ -1,7 +1,13 @@
 require 'json'
 
+# mojxml-rs（Rust 実装）が出力する newline-delimited GeoJSON を
+# daihyo レイヤー（代表点ポイント）NDJSON に変換する。
+# 代表点経度 / 代表点緯度 から Point Feature を生成する。
+# 旧 mojxml2geojson 方式の後処理は daihyo_legacy.rb を参照。
+
 while gets
   f = JSON.parse($_)
+  props = f['properties'] || {}
   pt = {
     :type => 'Feature',
     :tippecanoe => {
@@ -13,8 +19,8 @@ while gets
     :geometry => {
       :type => 'Point',
       :coordinates => [
-        f['properties']['代表点経度'],
-        f['properties']['代表点緯度']
+        props['代表点経度'],
+        props['代表点緯度']
       ]
     }
   }
