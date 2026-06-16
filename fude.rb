@@ -1,19 +1,19 @@
 require 'json'
 require 'digest'
 
-pref = ENV['PREF']
-basename = ENV['BASENAME']
+# mojxml-rs（Rust 実装）が出力する newline-delimited GeoJSON を
+# fude レイヤー（ポリゴン）NDJSON に変換する。
+# 旧 mojxml2geojson 方式の後処理は fude_legacy.rb を参照。
+#
+# mojxml-rs の出力特性
+# - 筆ID の属性名が「筆id」（小文字）になる → 「筆ID」へ正規化する
+# - version 属性は出力されない
+# - 任意座標系・地区外・別図はデフォルトで出力されない（grep -v 任意座標 が不要）
 
-# SHA256由来のハッシュ値を、53bit符号なし整数（JavaScriptで安全に扱える範囲）に縮小する
-# これは、MVT以外でのFeature ID利用を想定したもので、下記2つの観点で実装している
-# 1. JavaScriptで安全に扱える最大整数値(Number.MAX_SAFE_INTEGER = 2^53 - 1)を超えないようにする
-# 2. OGR の int64（2^63 - 1）を超えないようにする
-# 3. Tippecanoe の整数ID（int64）でオーバーフローを起こさないようにする
-# - 64bitのハッシュからIDを生成するため一意性が高い
-# - 53bit以下に収めることで、JavaScript でも安全に扱える
-# - Tippecanoe や OGR（int64）でもオーバーフローを起こさない
-# 可読性の高い ID 文字列（global_id）を元にSHA256 の先頭64bitを整数化し、
-# その値を MAX_SAFE_INTEGER で剰余して、JavaScript・FGB・MVT すべてに対応可能な範囲の整数IDを返す
+pref = ENV['PREF']
+
+# SHA256由来のハッシュ値を、53bit符号なし整数（JavaScriptで安全に扱える範囲）に縮小する。
+# MVT(uint64) / OGR(int64) / JavaScript(Number.MAX_SAFE_INTEGER) のいずれでも安全に扱える ID を返す。
 MAX_SAFE_INTEGER = (1 << 53) - 1  # => 9_007_199_254_740_991
 def safe_id(str)
   Digest::SHA256.hexdigest(str)[0, 16].to_i(16) % MAX_SAFE_INTEGER
@@ -21,10 +21,19 @@ end
 
 while gets
   f = JSON.parse($_)
-  if f['properties'] && f['properties']['筆ID']
-    uid_str = "#{pref}_#{basename}_#{f['properties']['筆ID']}"
-    f['properties']['global_id'] = uid_str
-    f['id'] = safe_id(uid_str)
+  props = f['properties']
+  if props
+    fude_id = props['筆ID'] || props['筆id']
+    if fude_id
+      props.delete('筆id')
+      props['筆ID'] = fude_id
+
+      # mojxml-rs は zip 群を一括変換するためファイル名（連番）を属性に持たない。
+      # global_id は pref・市区町村コード・筆ID から決定的に生成し、pref 内で一意にする。
+      uid_str = "#{pref}_#{props['市区町村コード']}_#{fude_id}"
+      props['global_id'] = uid_str
+      f['id'] = safe_id(uid_str)
+    end
   end
   f[:tippecanoe] = {
     :layer => 'fude',
